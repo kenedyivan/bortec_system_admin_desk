@@ -1,0 +1,37 @@
+Items_list
+-----------
+codes
+products
+units
+unit_price
+remarks
+
+Received Products
+-----------------
+date
+codes
+products
+units
+quantity
+price
+
+Sales
+-----------------
+date
+codes
+products
+units
+quantity
+price
+
+Stocks Inventory
+-----------------
+codes
+products
+units
+received
+sales
+stocks
+price
+total
+

@@ -1,0 +1,36 @@
+products
+productname,
+product_price,
+####bar_code,
+date_added,
+
+
+example
+
+company -> fresh dairy
+product -> yoghurt
+flavors -> strawberry, vanilla, chocolate
+packaging quantity -> 500g
+price -> 3000 shillings
+barcode ->
+
+
+product
+
+barcode, product_name, packaging quantity, unit_price, stock_count, man_date, ex_date
+927904719473194, uganda waragi premium, 100ml, 2000, 100, 2018-03-26, 2018-09-30
+912734091278342, yoghurt, 100ml, 2000, 600, 2018-03-26, 2018-09-30
+903743434343434, nile beer, 100ml, 2000, 800, 2018-03-26, 2018-09-30
+343434234234343, guiness, 100ml, 2000, 1100, 2018-03-26, 2018-09-30
+234234234234324, tusker larger, 100ml, 44000, 100, 2018-03-26, 2018-09-30
+098089893434343, bell, 100ml, 2000, 9900, 2018-03-26, 2018-09-30
+234234234235324, castle lite, 100ml, 55000, 100, 2018-03-26, 2018-09-30
+234234242323232, coffee spirit, 100ml, 88000, 100, 2018-03-26, 2018-09-30
+234234234343432, coco waragi, 100ml, 78000, 100, 2018-03-26, 2018-09-30
+234234235354546, red bull, 100ml, 2000, 89000, 2018-03-26, 2018-09-30
+435346656547476, johny walker, 100ml, 2000, 23400, 2018-03-26, 2018-09-30
+
+scenario
+927904719473194, uganda waragi premium, 100ml, 2000, 100, 2018-03-26, 2018-09-30
+
+
