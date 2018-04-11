@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>965</width>
+    <height>598</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <widget class="QTableWidget" name="tableWidget">
+      <property name="rowCount">
+       <number>5</number>
+      </property>
+      <property name="columnCount">
+       <number>9</number>
+      </property>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <column/>
+      <column/>
+      <column/>
+      <column/>
+      <column/>
+      <column/>
+      <column/>
+      <column/>
+      <column/>
+      <item row="0" column="0">
+       <property name="text">
+        <string>Stock ID</string>
+       </property>
+      </item>
+      <item row="0" column="1">
+       <property name="text">
+        <string>Product Name</string>
+       </property>
+      </item>
+      <item row="0" column="2">
+       <property name="text">
+        <string>Received</string>
+       </property>
+      </item>
+      <item row="0" column="3">
+       <property name="text">
+        <string>Sales</string>
+       </property>
+      </item>
+      <item row="0" column="4">
+       <property name="text">
+        <string>Stocks</string>
+       </property>
+      </item>
+      <item row="0" column="5">
+       <property name="text">
+        <string>Expenditure Cost</string>
+       </property>
+      </item>
+      <item row="0" column="6">
+       <property name="text">
+        <string>Sales Cost</string>
+       </property>
+      </item>
+      <item row="0" column="7">
+       <property name="text">
+        <string>Created At</string>
+       </property>
+      </item>
+      <item row="0" column="8">
+       <property name="text">
+        <string>Updated At</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>965</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+   </widget>
+   <addaction name="menuFile"/>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
