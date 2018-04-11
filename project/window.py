@@ -7,9 +7,336 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import mysql.connector
 
 
 class Ui_MainWindow(object):
+    def load_inventory_data(self):
+        conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
+        cursor = conn.cursor()
+        cursor.execute('select inventory_stocks.id,items.codes,items.product_name,'
+                       'inventory_stocks.received,inventory_stocks.sales,'
+                       'inventory_stocks.stocks, inventory_stocks.total_expenditure_cost,'
+                       'inventory_stocks.total_sales_cost, inventory_stocks.created_at,'
+                       'inventory_stocks.updated_at from inventory_stocks '
+                       'left join items on items.id = inventory_stocks.item_id')
+        data_list = cursor.fetchall()
+        print(data_list)
+        rows = 1
+        for row_number, d in enumerate(data_list):
+            self.tableWidget.setRowCount(rows)
+            self.tableWidget.insertRow(rows)
+            for column_number, data in enumerate(d):
+                self.tableWidget.setItem(rows, column_number, QtWidgets.QTableWidgetItem(str(data)))
+            rows = rows + 1
+        conn.close()
+
+    def load_items_data(self):
+        conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
+        cursor = conn.cursor()
+        cursor.execute('select id, codes, product_name, units, unit_price, remarks, created_at, updated_at from items')
+        data_list = cursor.fetchall()
+        print(data_list)
+        rows = 1
+        for row_number, d in enumerate(data_list):
+            self.tableWidget.setRowCount(rows)
+            self.tableWidget.insertRow(rows)
+            for column_number, data in enumerate(d):
+                self.tableWidget.setItem(rows, column_number, QtWidgets.QTableWidgetItem(str(data)))
+            rows = rows + 1
+        conn.close()
+
+    def load_sales_data(self):
+        conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
+        cursor = conn.cursor()
+        cursor.execute('select sales.id, items.product_name, CONCAT(operators.first_name,\' \', '
+                       'operators.last_name) AS '
+                       'name, sales.quantity, sales.total_price, sales.created_at, sales.updated_at '
+                       'from sales left join items on items.id = sales.item_id left join operators '
+                       'on operators.id = sales.operator_id order by created_at desc')
+        data_list = cursor.fetchall()
+        print(data_list)
+        rows = 1
+        for row_number, d in enumerate(data_list):
+            self.tableWidget.setRowCount(rows)
+            self.tableWidget.insertRow(rows)
+            for column_number, data in enumerate(d):
+                self.tableWidget.setItem(rows, column_number, QtWidgets.QTableWidgetItem(str(data)))
+            rows = rows + 1
+        conn.close()
+
+    def load_received_data(self):
+        conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
+        cursor = conn.cursor()
+        cursor.execute('select received_products.id, items.product_name, CONCAT(operators.first_name,\' \', '
+                       'operators.last_name) AS '
+                       'name, received_products.quantity, received_products.total_price, '
+                       'received_products.created_at, received_products.updated_at '
+                       'from received_products left join items on '
+                       'items.id = received_products.item_id left join operators '
+                       'on operators.id = received_products.operator_id order by created_at desc')
+        data_list = cursor.fetchall()
+        print(data_list)
+        rows = 1
+        for row_number, d in enumerate(data_list):
+            self.tableWidget.setRowCount(rows)
+            self.tableWidget.insertRow(rows)
+            for column_number, data in enumerate(d):
+                self.tableWidget.setItem(rows, column_number, QtWidgets.QTableWidgetItem(str(data)))
+            rows = rows + 1
+        conn.close()
+
+    def load_operators_data(self):
+        conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
+        cursor = conn.cursor()
+        cursor.execute('select id, first_name, last_name, auth_id, dob, created_at, updated_at from operators')
+        data_list = cursor.fetchall()
+        print(data_list)
+        rows = 1
+        for row_number, d in enumerate(data_list):
+            self.tableWidget.setRowCount(rows)
+            self.tableWidget.insertRow(rows)
+            for column_number, data in enumerate(d):
+                self.tableWidget.setItem(rows, column_number, QtWidgets.QTableWidgetItem(str(data)))
+            rows = rows + 1
+        conn.close()
+
+    def inventory_table(self):
+        self.tableWidget = QtWidgets.QTableWidget()
+        self.tableWidget.setRowCount(5)
+        self.tableWidget.setColumnCount(10)
+        self.tableWidget.setObjectName("tableWidget")
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 0, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 1, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 2, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 3, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 4, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 5, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 6, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 7, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 8, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 9, item)
+        _translate = QtCore.QCoreApplication.translate
+        # MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        __sortingEnabled = self.tableWidget.isSortingEnabled()
+        self.tableWidget.setSortingEnabled(False)
+        item = self.tableWidget.item(0, 0)
+        item.setText(_translate("MainWindow", "Stock ID"))
+        item = self.tableWidget.item(0, 1)
+        item.setText(_translate("MainWindow", "Codes"))
+        item = self.tableWidget.item(0, 2)
+        item.setText(_translate("MainWindow", "Product Name"))
+        item = self.tableWidget.item(0, 3)
+        item.setText(_translate("MainWindow", "Received"))
+        item = self.tableWidget.item(0, 4)
+        item.setText(_translate("MainWindow", "Sales"))
+        item = self.tableWidget.item(0, 5)
+        item.setText(_translate("MainWindow", "Stocks"))
+        item = self.tableWidget.item(0, 6)
+        item.setText(_translate("MainWindow", "Expenditure Cost"))
+        item = self.tableWidget.item(0, 7)
+        item.setText(_translate("MainWindow", "Sales Cost"))
+        item = self.tableWidget.item(0, 8)
+        item.setText(_translate("MainWindow", "Created At"))
+        item = self.tableWidget.item(0, 9)
+        item.setText(_translate("MainWindow", "Updated At"))
+
+        # Loads the inventory data
+        self.load_inventory_data()
+
+        self.tableWidget.setSortingEnabled(__sortingEnabled)
+        return self.tableWidget
+
+    def items_table(self):
+        self.tableWidget = QtWidgets.QTableWidget()
+        self.tableWidget.setRowCount(5)
+        self.tableWidget.setColumnCount(8)
+        self.tableWidget.setObjectName("tableWidget")
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 0, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 1, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 2, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 3, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 4, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 5, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 6, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 7, item)
+        _translate = QtCore.QCoreApplication.translate
+        # MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        __sortingEnabled = self.tableWidget.isSortingEnabled()
+        self.tableWidget.setSortingEnabled(False)
+        item = self.tableWidget.item(0, 0)
+        item.setText(_translate("MainWindow", "Stock ID"))
+        item = self.tableWidget.item(0, 1)
+        item.setText(_translate("MainWindow", "Codes"))
+        item = self.tableWidget.item(0, 2)
+        item.setText(_translate("MainWindow", "Product name"))
+        item = self.tableWidget.item(0, 3)
+        item.setText(_translate("MainWindow", "Units"))
+        item = self.tableWidget.item(0, 4)
+        item.setText(_translate("MainWindow", "Unit price"))
+        item = self.tableWidget.item(0, 5)
+        item.setText(_translate("MainWindow", "Remarks"))
+        item = self.tableWidget.item(0, 6)
+        item.setText(_translate("MainWindow", "Created At"))
+        item = self.tableWidget.item(0, 7)
+        item.setText(_translate("MainWindow", "Updated At"))
+
+        # Loads the inventory data
+        self.load_items_data()
+
+        self.tableWidget.setSortingEnabled(__sortingEnabled)
+        return self.tableWidget
+
+    def sales_table(self):
+        self.tableWidget = QtWidgets.QTableWidget()
+        self.tableWidget.setRowCount(5)
+        self.tableWidget.setColumnCount(7)
+        self.tableWidget.setObjectName("tableWidget")
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 0, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 1, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 2, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 3, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 4, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 5, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 6, item)
+        _translate = QtCore.QCoreApplication.translate
+        # MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        __sortingEnabled = self.tableWidget.isSortingEnabled()
+        self.tableWidget.setSortingEnabled(False)
+        item = self.tableWidget.item(0, 0)
+        item.setText(_translate("MainWindow", "Sale ID"))
+        item = self.tableWidget.item(0, 1)
+        item.setText(_translate("MainWindow", "Product"))
+        item = self.tableWidget.item(0, 2)
+        item.setText(_translate("MainWindow", "Operator"))
+        item = self.tableWidget.item(0, 3)
+        item.setText(_translate("MainWindow", "Quantity"))
+        item = self.tableWidget.item(0, 4)
+        item.setText(_translate("MainWindow", "Total price"))
+        item = self.tableWidget.item(0, 5)
+        item.setText(_translate("MainWindow", "Created At"))
+        item = self.tableWidget.item(0, 6)
+        item.setText(_translate("MainWindow", "Updated At"))
+
+        # Loads the inventory data
+        self.load_sales_data()
+
+        self.tableWidget.setSortingEnabled(__sortingEnabled)
+        return self.tableWidget
+
+    def received_table(self):
+        self.tableWidget = QtWidgets.QTableWidget()
+        self.tableWidget.setRowCount(5)
+        self.tableWidget.setColumnCount(7)
+        self.tableWidget.setObjectName("tableWidget")
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 0, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 1, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 2, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 3, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 4, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 5, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 6, item)
+        _translate = QtCore.QCoreApplication.translate
+        # MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        __sortingEnabled = self.tableWidget.isSortingEnabled()
+        self.tableWidget.setSortingEnabled(False)
+        item = self.tableWidget.item(0, 0)
+        item.setText(_translate("MainWindow", "Received ID"))
+        item = self.tableWidget.item(0, 1)
+        item.setText(_translate("MainWindow", "Product"))
+        item = self.tableWidget.item(0, 2)
+        item.setText(_translate("MainWindow", "Operator"))
+        item = self.tableWidget.item(0, 3)
+        item.setText(_translate("MainWindow", "Quantity"))
+        item = self.tableWidget.item(0, 4)
+        item.setText(_translate("MainWindow", "Total price"))
+        item = self.tableWidget.item(0, 5)
+        item.setText(_translate("MainWindow", "Created At"))
+        item = self.tableWidget.item(0, 6)
+        item.setText(_translate("MainWindow", "Updated At"))
+
+        # Loads the inventory data
+        self.load_received_data()
+
+        self.tableWidget.setSortingEnabled(__sortingEnabled)
+        return self.tableWidget
+
+    def operators_table(self):
+        self.tableWidget = QtWidgets.QTableWidget()
+        self.tableWidget.setRowCount(5)
+        self.tableWidget.setColumnCount(7)
+        self.tableWidget.setObjectName("tableWidget")
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 0, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 1, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 2, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 3, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 4, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 5, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tableWidget.setItem(0, 6, item)
+        _translate = QtCore.QCoreApplication.translate
+        # MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        __sortingEnabled = self.tableWidget.isSortingEnabled()
+        self.tableWidget.setSortingEnabled(False)
+        item = self.tableWidget.item(0, 0)
+        item.setText(_translate("MainWindow", "Operator ID"))
+        item = self.tableWidget.item(0, 1)
+        item.setText(_translate("MainWindow", "First name"))
+        item = self.tableWidget.item(0, 2)
+        item.setText(_translate("MainWindow", "Last name"))
+        item = self.tableWidget.item(0, 3)
+        item.setText(_translate("MainWindow", "Auth ID"))
+        item = self.tableWidget.item(0, 4)
+        item.setText(_translate("MainWindow", "Date of birth"))
+        item = self.tableWidget.item(0, 5)
+        item.setText(_translate("MainWindow", "Created At"))
+        item = self.tableWidget.item(0, 6)
+        item.setText(_translate("MainWindow", "Updated At"))
+
+        # Loads the inventory data
+        self.load_operators_data()
+
+        self.tableWidget.setSortingEnabled(__sortingEnabled)
+        return self.tableWidget
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
@@ -65,6 +392,9 @@ class Ui_MainWindow(object):
         self.pushButton_4 = QtWidgets.QPushButton(self.frame_4)
         self.pushButton_4.setObjectName("pushButton_4")
         self.verticalLayout.addWidget(self.pushButton_4)
+        self.pushButton_operators = QtWidgets.QPushButton(self.frame_4)
+        self.pushButton_operators.setObjectName("pushButton_operators")
+        self.verticalLayout.addWidget(self.pushButton_operators)
         self.pushButton_5 = QtWidgets.QPushButton(self.frame_4)
         self.pushButton_5.setObjectName("pushButton_5")
         self.verticalLayout.addWidget(self.pushButton_5)
@@ -85,6 +415,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.btn_items_click()
         # self.tableWidget = QtWidgets.QTableWidget(self.frame_2)
         # self.tableWidget.setRowCount(9)
         # self.tableWidget.setColumnCount(10)
@@ -120,28 +451,53 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuWindow.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
 
-        self.pushButton.clicked.connect(self.btn_click)
+        self.pushButton.clicked.connect(self.btn_items_click)
+        self.pushButton_2.clicked.connect(self.btn_sales_click)
+        self.pushButton_3.clicked.connect(self.btn_received_click)
+        self.pushButton_4.clicked.connect(self.btn_inventory_click)
+        self.pushButton_operators.clicked.connect(self.btn_operators_click)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def btn_click(self):
+    '''
+    Side menu button events
+    '''
+
+    def btn_inventory_click(self):
         for i in reversed(range(self.verticalLayout_3.count())):
             self.verticalLayout_3.itemAt(i).widget().setParent(None)
-        self.mylabel = QtWidgets.QLabel(self.frame_3)
-        self.mylabel.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self.mylabel.setObjectName("mylabel")
-        self.mylabel.setText("My label")
-        self.verticalLayout_3.addWidget(self.mylabel)
+        self.verticalLayout_3.addWidget(self.inventory_table())
+
+    def btn_items_click(self):
+        for i in reversed(range(self.verticalLayout_3.count())):
+            self.verticalLayout_3.itemAt(i).widget().setParent(None)
+        self.verticalLayout_3.addWidget(self.items_table())
+
+    def btn_sales_click(self):
+        for i in reversed(range(self.verticalLayout_3.count())):
+            self.verticalLayout_3.itemAt(i).widget().setParent(None)
+        self.verticalLayout_3.addWidget(self.sales_table())
+
+    def btn_received_click(self):
+        for i in reversed(range(self.verticalLayout_3.count())):
+            self.verticalLayout_3.itemAt(i).widget().setParent(None)
+        self.verticalLayout_3.addWidget(self.received_table())
+
+    def btn_operators_click(self):
+        for i in reversed(range(self.verticalLayout_3.count())):
+            self.verticalLayout_3.itemAt(i).widget().setParent(None)
+        self.verticalLayout_3.addWidget(self.operators_table())
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Bortec Inventory Analytics System"))
         self.label.setText(_translate("MainWindow", "<h2><i><b><font color=red>BORTEC</font></b></i></h2>"))
         self.pushButton.setText(_translate("MainWindow", "Items"))
         self.pushButton_2.setText(_translate("MainWindow", "Sales"))
         self.pushButton_3.setText(_translate("MainWindow", "Received"))
         self.pushButton_4.setText(_translate("MainWindow", "Inventory"))
+        self.pushButton_operators.setText(_translate("MainWindow", "Operators"))
         self.pushButton_5.setText(_translate("MainWindow", "Analytics"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuEdit.setTitle(_translate("MainWindow", "Edit"))
