@@ -461,7 +461,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     '''
-    Side menu button events
+    Side menu button events handlers
     '''
 
     def btn_inventory_click(self):
@@ -487,7 +487,44 @@ class Ui_MainWindow(object):
     def btn_operators_click(self):
         for i in reversed(range(self.verticalLayout_3.count())):
             self.verticalLayout_3.itemAt(i).widget().setParent(None)
-        self.verticalLayout_3.addWidget(self.operators_table())
+
+        # self.verticalLayout_3.addWidget(self.operators_table())
+        self.frame_6 = QtWidgets.QFrame(self.frame_2)
+        self.frame_6.setMaximumSize(QtCore.QSize(16777215, 50))
+        self.frame_6.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_6.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_6.setObjectName("frame_6")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.frame_6)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.addOperator = QtWidgets.QPushButton(self.frame_6)
+        self.addOperator.setText("Add Operator")
+        self.addOperator.setObjectName("addOperator")
+        self.horizontalLayout_2.addWidget(self.addOperator)
+        spacerItem = QtWidgets.QSpacerItem(652, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_2.addItem(spacerItem)
+        self.verticalLayout_3.addWidget(self.frame_6)
+
+        ## Lower frame
+        self.frame_7 = QtWidgets.QFrame(self.frame_2)
+        self.frame_7.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_7.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_7.setObjectName("frame_7")
+        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.frame_7)
+        self.verticalLayout_6.setObjectName("verticalLayout_6")
+        self.verticalLayout_5 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_5.setObjectName("verticalLayout_5")
+        # self.tableWidget = QtWidgets.QTableWidget(self.frame_7)
+        # self.tableWidget.setRowCount(9)
+        # self.tableWidget.setColumnCount(9)
+        # self.tableWidget.setObjectName("tableWidget")
+
+        self.verticalLayout_5.addWidget(self.operators_table())
+        self.verticalLayout_6.addLayout(self.verticalLayout_5)
+        self.verticalLayout_3.addWidget(self.frame_7)
+
+    '''
+        Ends button events handlers
+    '''
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
