@@ -364,41 +364,24 @@ class Ui_MainWindow(object):
         self.canvas = FigureCanvas(self.fig)
         self.verticalLayout_3.addWidget(self.canvas)
         self.ax1 = self.fig.add_subplot(1, 1, 1)
-        self.ax1.set_title("Sales Analysis")
-        self.ax1.set_xlabel("This is the X Axis")
-        self.ax1.set_ylabel("This is the Y Axis")
         self.ani = animation.FuncAnimation(self.fig, self.animate, interval=1000)
         self.canvas.draw()
 
     def animate(self, i):
-        graph_data = open('real_time_data.data', 'r').read()
+        graph_data = open('real_time_data.data', 'r').read()  # todo Retrieve from database
         lines = graph_data.split('\n')
         xs = []
         ys = []
-        int_ys = []
-        all_points = []
         for line in lines:
             if len(line) > 1:
                 x, y = line.split(',')
                 xs.append(int(x))
                 ys.append(int(y))
-                int_ys.append(int(y))
-                all_points.append([int(x), int(y)])
-        # print("All ", all_points)
-        # sorted(all_points, key=itemgetter(1))
-        # data = sorted(all_points, key=lambda x: x[1])
-        # # print("All_sorted ", data)
-        # for point in data:
-        #     xs.append(point[0])
-        #     ys.append(point[1])
-        #     int_ys.append(int(y))
-        # print("ys", ys)
-        # print("xs", xs)
         self.ax1.clear()
-        # plt.ylim(ymax=max(int_ys))
-        # plt.ylim(ymin=min(int_ys))
         self.ax1.plot(xs, ys)
-        # plt.yscale('linear')
+        self.ax1.set_title("Real-time Sales Analysis")
+        self.ax1.set_xlabel("Quantity")
+        self.ax1.set_ylabel("Sales")
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
