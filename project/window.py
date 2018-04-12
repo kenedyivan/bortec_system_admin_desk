@@ -9,6 +9,14 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import mysql.connector
 import bcrypt
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolBar
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+from matplotlib import style
+from operator import itemgetter
+
+style.use('fivethirtyeight')
 
 
 class Ui_MainWindow(object):
@@ -339,6 +347,59 @@ class Ui_MainWindow(object):
         self.tableWidget.setSortingEnabled(__sortingEnabled)
         return self.tableWidget
 
+    def analytics_view(self):
+        # self.figure = plt.figure(figsize=(15, 5))
+        # self.canvas = FigureCanvas(self.figure)
+        # self.verticalLayout_3.addWidget(self.canvas)
+        #
+        # plt.cla()
+        # ax = self.figure.add_subplot(111)
+        # x = [i for i in range(100)]
+        # y = [i ** 2 for i in x]
+        # ax.plot(x, y, 'b.')
+        # ax.set_title('Quadratic Plot')
+        # self.canvas.draw()
+
+        self.fig = plt.figure()
+        self.canvas = FigureCanvas(self.fig)
+        self.verticalLayout_3.addWidget(self.canvas)
+        self.ax1 = self.fig.add_subplot(1, 1, 1)
+        self.ax1.set_title("Sales Analysis")
+        self.ax1.set_xlabel("This is the X Axis")
+        self.ax1.set_ylabel("This is the Y Axis")
+        self.ani = animation.FuncAnimation(self.fig, self.animate, interval=1000)
+        self.canvas.draw()
+
+    def animate(self, i):
+        graph_data = open('real_time_data.data', 'r').read()
+        lines = graph_data.split('\n')
+        xs = []
+        ys = []
+        int_ys = []
+        all_points = []
+        for line in lines:
+            if len(line) > 1:
+                x, y = line.split(',')
+                xs.append(int(x))
+                ys.append(int(y))
+                int_ys.append(int(y))
+                all_points.append([int(x), int(y)])
+        # print("All ", all_points)
+        # sorted(all_points, key=itemgetter(1))
+        # data = sorted(all_points, key=lambda x: x[1])
+        # # print("All_sorted ", data)
+        # for point in data:
+        #     xs.append(point[0])
+        #     ys.append(point[1])
+        #     int_ys.append(int(y))
+        # print("ys", ys)
+        # print("xs", xs)
+        self.ax1.clear()
+        # plt.ylim(ymax=max(int_ys))
+        # plt.ylim(ymin=min(int_ys))
+        self.ax1.plot(xs, ys)
+        # plt.yscale('linear')
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
@@ -457,6 +518,7 @@ class Ui_MainWindow(object):
         self.pushButton_2.clicked.connect(self.btn_sales_click)
         self.pushButton_3.clicked.connect(self.btn_received_click)
         self.pushButton_4.clicked.connect(self.btn_inventory_click)
+        self.pushButton_5.clicked.connect(self.btn_analytics_click)
         self.pushButton_operators.clicked.connect(self.btn_operators_click)
 
         self.retranslateUi(MainWindow)
@@ -485,6 +547,11 @@ class Ui_MainWindow(object):
         for i in reversed(range(self.verticalLayout_3.count())):
             self.verticalLayout_3.itemAt(i).widget().setParent(None)
         self.verticalLayout_3.addWidget(self.received_table())
+
+    def btn_analytics_click(self):
+        for i in reversed(range(self.verticalLayout_3.count())):
+            self.verticalLayout_3.itemAt(i).widget().setParent(None)
+        self.analytics_view()
 
     def btn_operators_click(self):
         for i in reversed(range(self.verticalLayout_3.count())):
