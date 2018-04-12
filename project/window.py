@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
 from operator import itemgetter
+import numpy as np
 
 style.use('fivethirtyeight')
 
@@ -380,8 +381,118 @@ class Ui_MainWindow(object):
         self.ax1.clear()
         self.ax1.plot(xs, ys)
         self.ax1.set_title("Real-time Sales Analysis")
-        self.ax1.set_xlabel("Quantity")
-        self.ax1.set_ylabel("Sales")
+        self.ax1.set_xlabel("Sales")
+        self.ax1.set_ylabel("Quantity")
+
+    def static_analytics_view(self):
+        self.pie_charts = QtWidgets.QFrame(self.frame_2)
+        self.pie_charts.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.pie_charts.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.pie_charts.setObjectName("pie_charts")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.pie_charts)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+
+        self.sales_chart = QtWidgets.QFrame(self.pie_charts)
+        self.sales_chart.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.sales_chart.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.sales_chart.setObjectName("sales_chart")
+        self.verticalLayout_sales = QtWidgets.QVBoxLayout(self.sales_chart)
+        self.verticalLayout_sales.setObjectName("verticalLayout_sales")
+        self.sales_pie_vertical_layout = QtWidgets.QVBoxLayout()
+        self.sales_pie_vertical_layout.setObjectName("sales_pie_vertical_layout")
+        self.verticalLayout_sales.addLayout(self.sales_pie_vertical_layout)
+        self.horizontalLayout_2.addWidget(self.sales_chart)
+        self.sales_pie()
+
+        self.expenditure_chart = QtWidgets.QFrame(self.pie_charts)
+        self.expenditure_chart.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.expenditure_chart.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.expenditure_chart.setObjectName("expenditure_chart")
+        self.verticalLayout_exp = QtWidgets.QVBoxLayout(self.expenditure_chart)
+        self.verticalLayout_exp.setObjectName("verticalLayout_exp")
+        self.exp_pie_vertical_layout = QtWidgets.QVBoxLayout()
+        self.exp_pie_vertical_layout.setObjectName("exp_pie_vertical_layout")
+        self.verticalLayout_exp.addLayout(self.exp_pie_vertical_layout)
+        self.horizontalLayout_2.addWidget(self.expenditure_chart)
+        self.expenditure_pie()
+
+        self.verticalLayout_3.addWidget(self.pie_charts)
+
+        self.sales_vs_exp_chart = QtWidgets.QFrame(self.frame_2)
+        self.sales_vs_exp_chart.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.sales_vs_exp_chart.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.sales_vs_exp_chart.setObjectName("sales_vs_exp_chart")
+        self.verticalLayout_comp = QtWidgets.QVBoxLayout(self.sales_vs_exp_chart)
+        self.verticalLayout_comp.setObjectName("verticalLayout_comp")
+        self.comp_vertical_layout = QtWidgets.QVBoxLayout()
+        self.comp_vertical_layout.setObjectName("exp_pie_vertical_layout")
+        self.verticalLayout_comp.addLayout(self.comp_vertical_layout)
+        self.verticalLayout_3.addWidget(self.sales_vs_exp_chart)
+
+        self.sales_exp()
+
+    def sales_pie(self):
+        labels = 'Frogs', 'Hogs', 'Dogs', 'Logs'  # todo Load sales vs item_name from inventory table
+        sizes = [15, 30, 45, 10]
+        explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
+
+        self.fig1, ax1 = plt.subplots()
+        ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+                shadow=True, startangle=90)
+        ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        self.canvas_sales_pie = FigureCanvas(self.fig1)
+        self.sales_pie_vertical_layout.addWidget(self.canvas_sales_pie)
+        ax1.set_title("Sales")
+        self.canvas_sales_pie.draw()
+
+    def expenditure_pie(self):
+        labels = 'Frogs', 'Hogs', 'Dogs', 'Logs'  # todo Load expenditure vs item_name from inventory table
+        sizes = [15, 30, 45, 10]
+        explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
+
+        self.fig2, ax1 = plt.subplots()
+        ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+                shadow=True, startangle=90)
+        ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        self.canvas_exp_pie = FigureCanvas(self.fig2)
+        self.exp_pie_vertical_layout.addWidget(self.canvas_exp_pie)
+        # ax1.title('Raining Hogs and Dogs', bbox={'facecolor': '0.8', 'pad': 5})
+        ax1.set_title("Expenditure")
+        self.canvas_exp_pie.draw()
+
+    def sales_exp(self):
+        # data to plot
+        n_groups = 4
+        means_frank = (90, 55, 40, 65)
+        means_guido = (85, 62, 54, 20)
+
+        # create plot
+        self.fig3, ax = plt.subplots()
+        index = np.arange(n_groups)
+        bar_width = 0.35
+        opacity = 0.8
+
+        rects1 = plt.bar(index, means_frank, bar_width,
+                         alpha=opacity,
+                         color='b',
+                         label='Sales')
+
+        rects2 = plt.bar(index + bar_width, means_guido, bar_width,
+                         alpha=opacity,
+                         color='g',
+                         label='Expenditure')
+
+        plt.xlabel('Products')
+        plt.ylabel('Pice(UGX)')
+        plt.title('Sales vs Expenditure')
+        plt.xticks(index + bar_width, ('Ug', 'Empire', 'Zed', 'London'))
+        plt.legend()
+
+        plt.tight_layout()
+        self.canvas_comp = FigureCanvas(self.fig3)
+        self.comp_vertical_layout.addWidget(self.canvas_comp)
+        self.canvas_comp.draw()
+        # plt.show()
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -446,12 +557,44 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.pushButton_5)
         self.verticalLayout_2.addWidget(self.frame_4)
         self.verticalLayout_4.addWidget(self.frame_3)
+
+        # Analytics buttons
         self.frame_5 = QtWidgets.QFrame(self.frame)
         self.frame_5.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_5.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_5.setObjectName("frame_5")
+        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.frame_5)
+        self.verticalLayout_6.setObjectName("verticalLayout_6")
+        self.frame_6 = QtWidgets.QFrame(self.frame_5)
+        self.frame_6.setStyleSheet("border-color:green;")
+        self.frame_6.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_6.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_6.setObjectName("frame_6")
+        self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.frame_6)
+        self.verticalLayout_5.setObjectName("verticalLayout_5")
+        self.pushButton_6 = QtWidgets.QPushButton(self.frame_6)
+        self.pushButton_6.setStyleSheet("color:red;\n"
+                                        "background-color:blue;")
+        self.pushButton_6.setObjectName("pushButton_6")
+        self.verticalLayout_5.addWidget(self.pushButton_6)
+        self.pushButton_7 = QtWidgets.QPushButton(self.frame_6)
+        self.pushButton_7.setObjectName("pushButton_7")
+        self.verticalLayout_5.addWidget(self.pushButton_7)
+        self.pushButton_8 = QtWidgets.QPushButton(self.frame_6)
+        self.pushButton_8.setObjectName("pushButton_8")
+        self.verticalLayout_5.addWidget(self.pushButton_8)
+        self.pushButton_9 = QtWidgets.QPushButton(self.frame_6)
+        self.pushButton_9.setObjectName("pushButton_9")
+        self.verticalLayout_5.addWidget(self.pushButton_9)
+        self.pushButton_10 = QtWidgets.QPushButton(self.frame_6)
+        self.pushButton_10.setObjectName("pushButton_10")
+        self.verticalLayout_5.addWidget(self.pushButton_10)
+        self.verticalLayout_6.addWidget(self.frame_6)
         self.verticalLayout_4.addWidget(self.frame_5)
+        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_4.addItem(spacerItem)
         self.horizontalLayout.addWidget(self.frame)
+
         self.frame_2 = QtWidgets.QFrame(self.centralwidget)
         self.frame_2.setStyleSheet("background-color:rgb(207, 255, 180)")
         self.frame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -461,12 +604,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_3.setObjectName("verticalLayout_3")
+
+        # Loads first page, items page
         self.btn_items_click()
-        # self.tableWidget = QtWidgets.QTableWidget(self.frame_2)
-        # self.tableWidget.setRowCount(9)
-        # self.tableWidget.setColumnCount(10)
-        # self.tableWidget.setObjectName("tableWidget")
-        # self.verticalLayout_3.addWidget(self.tableWidget)
 
         self.horizontalLayout_2.addLayout(self.verticalLayout_3)
         self.horizontalLayout.addWidget(self.frame_2)
@@ -497,11 +637,13 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuWindow.menuAction())
         self.menubar.addAction(self.menuHelp.menuAction())
 
+        # Assigns button click callbacks
         self.pushButton.clicked.connect(self.btn_items_click)
         self.pushButton_2.clicked.connect(self.btn_sales_click)
         self.pushButton_3.clicked.connect(self.btn_received_click)
         self.pushButton_4.clicked.connect(self.btn_inventory_click)
         self.pushButton_5.clicked.connect(self.btn_analytics_click)
+        self.pushButton_6.clicked.connect(self.btn_static_analytics_click)
         self.pushButton_operators.clicked.connect(self.btn_operators_click)
 
         self.retranslateUi(MainWindow)
@@ -535,6 +677,11 @@ class Ui_MainWindow(object):
         for i in reversed(range(self.verticalLayout_3.count())):
             self.verticalLayout_3.itemAt(i).widget().setParent(None)
         self.analytics_view()
+
+    def btn_static_analytics_click(self):
+        for i in reversed(range(self.verticalLayout_3.count())):
+            self.verticalLayout_3.itemAt(i).widget().setParent(None)
+        self.static_analytics_view()
 
     def btn_operators_click(self):
         for i in reversed(range(self.verticalLayout_3.count())):
@@ -595,6 +742,11 @@ class Ui_MainWindow(object):
         self.pushButton_4.setText(_translate("MainWindow", "Inventory"))
         self.pushButton_operators.setText(_translate("MainWindow", "Operators"))
         self.pushButton_5.setText(_translate("MainWindow", "Analytics"))
+        self.pushButton_6.setText(_translate("MainWindow", "Static Analytics"))
+        self.pushButton_7.setText(_translate("MainWindow", "Predictive Analysis"))
+        self.pushButton_8.setText(_translate("MainWindow", "Operators Analytics"))
+        self.pushButton_9.setText(_translate("MainWindow", "Admins"))
+        self.pushButton_10.setText(_translate("MainWindow", "Logout"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuEdit.setTitle(_translate("MainWindow", "Edit"))
         self.menuView.setTitle(_translate("MainWindow", "View"))
