@@ -16,6 +16,7 @@ import matplotlib.animation as animation
 from matplotlib import style
 from operator import itemgetter
 import numpy as np
+from matplotlib.ticker import FuncFormatter
 
 style.use('fivethirtyeight')
 
@@ -113,6 +114,7 @@ class Ui_MainWindow(object):
         conn.close()
 
     def inventory_table(self):
+        MainWindow.setWindowTitle("Inventory")
         self.tableWidget = QtWidgets.QTableWidget()
         self.tableWidget.setRowCount(5)
         self.tableWidget.setColumnCount(10)
@@ -169,6 +171,7 @@ class Ui_MainWindow(object):
         return self.tableWidget
 
     def items_table(self):
+        MainWindow.setWindowTitle("Items list")
         self.tableWidget = QtWidgets.QTableWidget()
         self.tableWidget.setRowCount(5)
         self.tableWidget.setColumnCount(8)
@@ -217,6 +220,7 @@ class Ui_MainWindow(object):
         return self.tableWidget
 
     def sales_table(self):
+        MainWindow.setWindowTitle("Sales logs")
         self.tableWidget = QtWidgets.QTableWidget()
         self.tableWidget.setRowCount(5)
         self.tableWidget.setColumnCount(7)
@@ -261,6 +265,7 @@ class Ui_MainWindow(object):
         return self.tableWidget
 
     def received_table(self):
+        MainWindow.setWindowTitle("Received items logs")
         self.tableWidget = QtWidgets.QTableWidget()
         self.tableWidget.setRowCount(5)
         self.tableWidget.setColumnCount(7)
@@ -305,6 +310,7 @@ class Ui_MainWindow(object):
         return self.tableWidget
 
     def operators_table(self):
+        MainWindow.setWindowTitle("Operators")
         self.tableWidget = QtWidgets.QTableWidget()
         self.tableWidget.setRowCount(5)
         self.tableWidget.setColumnCount(7)
@@ -349,6 +355,7 @@ class Ui_MainWindow(object):
         return self.tableWidget
 
     def analytics_view(self):
+        MainWindow.setWindowTitle("Real-time sales analysis")
         # self.figure = plt.figure(figsize=(15, 5))
         # self.canvas = FigureCanvas(self.figure)
         # self.verticalLayout_3.addWidget(self.canvas)
@@ -369,15 +376,29 @@ class Ui_MainWindow(object):
         self.canvas.draw()
 
     def animate(self, i):
-        graph_data = open('real_time_data.data', 'r').read()  # todo Retrieve from database
-        lines = graph_data.split('\n')
-        xs = []
-        ys = []
-        for line in lines:
-            if len(line) > 1:
-                x, y = line.split(',')
-                xs.append(int(x))
-                ys.append(int(y))
+        conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
+        cursor = conn.cursor()
+        cursor.execute('select id, quantity from sales')
+        data_list = cursor.fetchall()
+        print(data_list)
+        db_xs = []
+        db_ys = []
+        for row_number, d in enumerate(data_list):
+            db_xs.append(str(d[0]))
+            db_ys.append(int(d[1]))
+
+        conn.close()
+        # graph_data = open('real_time_data.data', 'r').read()  # todo Retrieve from database
+        # lines = graph_data.split('\n')
+        # xs = []
+        # ys = []
+        # for line in lines:
+        #     if len(line) > 1:
+        #         x, y = line.split(',')
+        #         xs.append(int(x))
+        #         ys.append(int(y))
+        xs = db_xs
+        ys = db_ys
         self.ax1.clear()
         self.ax1.plot(xs, ys)
         self.ax1.set_title("Real-time Sales Analysis")
@@ -385,6 +406,7 @@ class Ui_MainWindow(object):
         self.ax1.set_ylabel("Quantity")
 
     def static_analytics_view(self):
+        MainWindow.setWindowTitle("Static analysis")
         self.pie_charts = QtWidgets.QFrame(self.frame_2)
         self.pie_charts.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.pie_charts.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -432,8 +454,26 @@ class Ui_MainWindow(object):
         self.sales_exp()
 
     def sales_pie(self):
-        labels = 'Frogs', 'Hogs', 'Dogs', 'Logs'  # todo Load sales vs item_name from inventory table
-        sizes = [15, 30, 45, 10]
+        conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
+        cursor = conn.cursor()
+        cursor.execute('select items.product_name, inventory_stocks.received, inventory_stocks.sales '
+                       'from items left join inventory_stocks on items.id = inventory_stocks.item_id')
+        data_list = cursor.fetchall()
+        names = []
+        sales_percent = []
+        for row_number, d in enumerate(data_list):
+            names.append(d[0])
+            # Calculate sales percentage
+            try:
+                sales_percent.append(int((((d[1] - d[2]) / d[1]) * 100)))
+            except ZeroDivisionError:
+                sales_percent.append(0)
+        conn.close()
+
+        # labels = 'Frogs', 'Hogs', 'Dogs', 'Logs'  # todo Load sales vs item_name from inventory table
+        labels = names
+        # sizes = [15, 30, 45, 10]
+        sizes = sales_percent
         explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
 
         self.fig1, ax1 = plt.subplots()
@@ -446,8 +486,27 @@ class Ui_MainWindow(object):
         self.canvas_sales_pie.draw()
 
     def expenditure_pie(self):
-        labels = 'Frogs', 'Hogs', 'Dogs', 'Logs'  # todo Load expenditure vs item_name from inventory table
-        sizes = [15, 30, 45, 10]
+        conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
+        cursor = conn.cursor()
+        cursor.execute('select items.product_name, inventory_stocks.received, inventory_stocks.stocks '
+                       'from items left join inventory_stocks on items.id = inventory_stocks.item_id')
+        data_list = cursor.fetchall()
+        names = []
+        stocks_percent = []
+        for row_number, d in enumerate(data_list):
+            names.append(d[0])
+            # Calculate sales percentage
+            try:
+                stocks_percent.append(int((((d[1] - d[2]) / d[1]) * 100)))
+            except ZeroDivisionError:
+                stocks_percent.append(0)
+        conn.close()
+
+        # labels = 'Frogs', 'Hogs', 'Dogs', 'Logs'  # todo Load expenditure vs item_name from inventory table
+        labels = names
+        # sizes = [15, 30, 45, 10]
+        sizes = stocks_percent
+
         explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
 
         self.fig2, ax1 = plt.subplots()
@@ -457,14 +516,30 @@ class Ui_MainWindow(object):
         self.canvas_exp_pie = FigureCanvas(self.fig2)
         self.exp_pie_vertical_layout.addWidget(self.canvas_exp_pie)
         # ax1.title('Raining Hogs and Dogs', bbox={'facecolor': '0.8', 'pad': 5})
-        ax1.set_title("Expenditure")
+        ax1.set_title("Stock")
         self.canvas_exp_pie.draw()
 
     def sales_exp(self):
+        conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
+        cursor = conn.cursor()
+        cursor.execute('select items.product_name, inventory_stocks.total_expenditure_cost, '
+                       'inventory_stocks.total_sales_cost '
+                       'from items left join inventory_stocks on items.id = inventory_stocks.item_id')
+        data_list = cursor.fetchall()
+        names = []
+        total_exp = []
+        total_sales = []
+        for row_number, d in enumerate(data_list):
+            names.append(d[0])
+            total_exp.append(int(d[1]))
+            total_sales.append(int(d[2]))
+        conn.close()
         # data to plot
-        n_groups = 4
-        means_frank = (90, 55, 40, 65)
-        means_guido = (85, 62, 54, 20)
+        n_groups = len(data_list)
+        # means_frank = (90, 55, 40, 65)
+        # means_guido = (85, 62, 54, 20)
+        means_frank = total_exp
+        means_guido = total_sales
 
         # create plot
         self.fig3, ax = plt.subplots()
@@ -475,17 +550,18 @@ class Ui_MainWindow(object):
         rects1 = plt.bar(index, means_frank, bar_width,
                          alpha=opacity,
                          color='b',
-                         label='Sales')
+                         label='Expenditure')
 
         rects2 = plt.bar(index + bar_width, means_guido, bar_width,
                          alpha=opacity,
                          color='g',
-                         label='Expenditure')
+                         label='Sales')
 
         plt.xlabel('Products')
-        plt.ylabel('Pice(UGX)')
+        plt.ylabel('Price(UGX)')
         plt.title('Sales vs Expenditure')
-        plt.xticks(index + bar_width, ('Ug', 'Empire', 'Zed', 'London'))
+        # plt.xticks(index + bar_width, ('Ug', 'Empire', 'Zed', 'London'))
+        plt.xticks(index + bar_width, tuple(names))
         plt.legend()
 
         plt.tight_layout()
@@ -493,6 +569,35 @@ class Ui_MainWindow(object):
         self.comp_vertical_layout.addWidget(self.canvas_comp)
         self.canvas_comp.draw()
         # plt.show()
+
+    def operator_performance_view(self):
+        MainWindow.setWindowTitle("Operators sales performance analysis")
+        conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
+        cursor = conn.cursor()
+        cursor.execute('SELECT o.first_name, SUM(s.quantity) as total FROM '
+                       'operators AS o, sales AS s WHERE o.id = s.operator_id  GROUP BY s.operator_id;')
+        data_list = cursor.fetchall()
+        print(data_list)
+
+        operators = []
+        total_sales = []
+        for row_number, d in enumerate(data_list):
+            operators.append(d[0])
+            total_sales.append(int(d[1]))
+        conn.close()
+
+        x = np.arange(len(data_list))
+        money = total_sales
+
+        self.fig4, ax4 = plt.subplots()
+        plt.bar(x, money)
+        plt.xticks(x, tuple(operators))
+        plt.xlabel('Operators')
+        plt.ylabel('Total sales')
+        plt.title('Operators sales performance')
+        self.canvas_operators = FigureCanvas(self.fig4)
+        self.verticalLayout_3.addWidget(self.canvas_operators)
+        self.canvas_operators.draw()
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -552,9 +657,6 @@ class Ui_MainWindow(object):
         self.pushButton_operators = QtWidgets.QPushButton(self.frame_4)
         self.pushButton_operators.setObjectName("pushButton_operators")
         self.verticalLayout.addWidget(self.pushButton_operators)
-        self.pushButton_5 = QtWidgets.QPushButton(self.frame_4)
-        self.pushButton_5.setObjectName("pushButton_5")
-        self.verticalLayout.addWidget(self.pushButton_5)
         self.verticalLayout_2.addWidget(self.frame_4)
         self.verticalLayout_4.addWidget(self.frame_3)
 
@@ -577,6 +679,9 @@ class Ui_MainWindow(object):
                                         "background-color:blue;")
         self.pushButton_6.setObjectName("pushButton_6")
         self.verticalLayout_5.addWidget(self.pushButton_6)
+        self.pushButton_5 = QtWidgets.QPushButton(self.frame_6)
+        self.pushButton_5.setObjectName("pushButton_5")
+        self.verticalLayout_5.addWidget(self.pushButton_5)
         self.pushButton_7 = QtWidgets.QPushButton(self.frame_6)
         self.pushButton_7.setObjectName("pushButton_7")
         self.verticalLayout_5.addWidget(self.pushButton_7)
@@ -644,6 +749,7 @@ class Ui_MainWindow(object):
         self.pushButton_4.clicked.connect(self.btn_inventory_click)
         self.pushButton_5.clicked.connect(self.btn_analytics_click)
         self.pushButton_6.clicked.connect(self.btn_static_analytics_click)
+        self.pushButton_8.clicked.connect(self.btn_operator_performance_click)
         self.pushButton_operators.clicked.connect(self.btn_operators_click)
 
         self.retranslateUi(MainWindow)
@@ -728,6 +834,11 @@ class Ui_MainWindow(object):
         self.setupDialogUi(self.dialog)
         self.dialog.show()
 
+    def btn_operator_performance_click(self):
+        for i in reversed(range(self.verticalLayout_3.count())):
+            self.verticalLayout_3.itemAt(i).widget().setParent(None)
+        self.operator_performance_view()
+
     '''
         Ends button events handlers
     '''
@@ -741,7 +852,7 @@ class Ui_MainWindow(object):
         self.pushButton_3.setText(_translate("MainWindow", "Received"))
         self.pushButton_4.setText(_translate("MainWindow", "Inventory"))
         self.pushButton_operators.setText(_translate("MainWindow", "Operators"))
-        self.pushButton_5.setText(_translate("MainWindow", "Analytics"))
+        self.pushButton_5.setText(_translate("MainWindow", "Real-time Analytics"))
         self.pushButton_6.setText(_translate("MainWindow", "Static Analytics"))
         self.pushButton_7.setText(_translate("MainWindow", "Predictive Analysis"))
         self.pushButton_8.setText(_translate("MainWindow", "Operators Analytics"))
