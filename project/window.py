@@ -9,6 +9,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import mysql.connector
 import bcrypt
+from PyQt5.QtCore import QEvent, Qt
+from PyQt5.QtGui import QCloseEvent
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolBar
 import matplotlib.pyplot as plt
@@ -17,6 +19,9 @@ from matplotlib import style
 from operator import itemgetter
 import numpy as np
 from matplotlib.ticker import FuncFormatter
+
+from project.admin_login import GUIForm
+from project.login import Ui_Dialog
 
 style.use('fivethirtyeight')
 
@@ -33,7 +38,6 @@ class Ui_MainWindow(object):
                        'inventory_stocks.updated_at from inventory_stocks '
                        'left join items on items.id = inventory_stocks.item_id')
         data_list = cursor.fetchall()
-        print(data_list)
         rows = 1
         for row_number, d in enumerate(data_list):
             self.tableWidget.setRowCount(rows)
@@ -48,7 +52,6 @@ class Ui_MainWindow(object):
         cursor = conn.cursor()
         cursor.execute('select id, codes, product_name, units, unit_price, remarks, created_at, updated_at from items')
         data_list = cursor.fetchall()
-        print(data_list)
         rows = 1
         for row_number, d in enumerate(data_list):
             self.tableWidget.setRowCount(rows)
@@ -67,7 +70,6 @@ class Ui_MainWindow(object):
                        'from sales left join items on items.id = sales.item_id left join operators '
                        'on operators.id = sales.operator_id order by created_at desc')
         data_list = cursor.fetchall()
-        print(data_list)
         rows = 1
         for row_number, d in enumerate(data_list):
             self.tableWidget.setRowCount(rows)
@@ -88,7 +90,6 @@ class Ui_MainWindow(object):
                        'items.id = received_products.item_id left join operators '
                        'on operators.id = received_products.operator_id order by created_at desc')
         data_list = cursor.fetchall()
-        print(data_list)
         rows = 1
         for row_number, d in enumerate(data_list):
             self.tableWidget.setRowCount(rows)
@@ -103,7 +104,6 @@ class Ui_MainWindow(object):
         cursor = conn.cursor()
         cursor.execute('select id, first_name, last_name, auth_id, dob, created_at, updated_at from operators')
         data_list = cursor.fetchall()
-        print(data_list)
         rows = 1
         for row_number, d in enumerate(data_list):
             self.tableWidget.setRowCount(rows)
@@ -171,7 +171,7 @@ class Ui_MainWindow(object):
         return self.tableWidget
 
     def items_table(self):
-        MainWindow.setWindowTitle("Items list")
+        # MainWindow.setWindowTitle("Items list")
         self.tableWidget = QtWidgets.QTableWidget()
         self.tableWidget.setRowCount(5)
         self.tableWidget.setColumnCount(8)
@@ -975,6 +975,14 @@ class Ui_MainWindow(object):
             conn.rollback()
 
         conn.close()
+
+    def show_login_dialog(self):
+        self.myapp = GUIForm()
+        self.myapp.show()
+
+    def __init__(self):
+        # Dialog of modal type, not dismissible by click to other windows
+        self.show_login_dialog()
 
 
 if __name__ == "__main__":
