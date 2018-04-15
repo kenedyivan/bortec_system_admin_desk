@@ -6,22 +6,16 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 import mysql.connector
 import bcrypt
-from PyQt5.QtCore import QEvent, Qt
-from PyQt5.QtGui import QCloseEvent
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolBar
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
-from operator import itemgetter
 import numpy as np
-from matplotlib.ticker import FuncFormatter
 
 from project.admin_login import GUIForm
-from project.login import Ui_Dialog
 
 style.use('fivethirtyeight')
 

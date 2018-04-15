@@ -68,15 +68,13 @@ class GUIForm(QtWidgets.QDialog):
         if self.authenticate_user(self.username, self.password):
             self.hide()
         else:
-            print("Wrong credentials")
-            self.label_3.setText("Wrong credentials")
+            self.label_3.setText("Wrong credentials!")
 
     def authenticate_user(self, username, password):
         conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
         cursor = conn.cursor()
         cursor.execute('select username, password from admins')
         data_list = cursor.fetchall()
-        print(data_list)
         db_username = ''
         db_password = ''
         for row_number, d in enumerate(data_list):
@@ -94,7 +92,6 @@ class GUIForm(QtWidgets.QDialog):
         return is_auth
 
     def reject(self):
-        print("Cancelled")
         self.close()
 
     def retranslateUi(self):
@@ -104,7 +101,6 @@ class GUIForm(QtWidgets.QDialog):
         self.label_2.setText(_translate("Dialog", "Password:"))
 
     def closeEvent(self, event):
-        print("User has clicked the red x on the main window")
         exit(0)
         event.accept()
 
