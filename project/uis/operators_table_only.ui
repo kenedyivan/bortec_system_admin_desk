@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>808</width>
+    <width>897</width>
     <height>600</height>
    </rect>
   </property>
@@ -128,7 +128,7 @@ stop: 0 #56a, stop: 0.1 #016);
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>808</width>
+     <width>897</width>
      <height>20</height>
     </rect>
    </property>

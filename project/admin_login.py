@@ -105,9 +105,9 @@ class GUIForm(QtWidgets.QDialog):
         event.accept()
 
 
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    myapp = GUIForm()
-    myapp.show()
-    ret = app.exec_()
-    sys.exit(ret)
+# if __name__ == "__main__":
+#     app = QtWidgets.QApplication(sys.argv)
+#     myapp = GUIForm()
+#     myapp.show()
+#     ret = app.exec_()
+#     sys.exit(ret)

@@ -165,7 +165,7 @@ class Ui_MainWindow(object):
         return self.tableWidget
 
     def items_table(self):
-        # MainWindow.setWindowTitle("Items list")
+        MainWindow.setWindowTitle("Items list")
         self.tableWidget = QtWidgets.QTableWidget()
         self.tableWidget.setRowCount(5)
         self.tableWidget.setColumnCount(8)
@@ -705,7 +705,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.setObjectName("verticalLayout_3")
 
         # Loads first page, items page
-        self.btn_items_click()
+        # self.btn_items_click()
 
         self.horizontalLayout_2.addLayout(self.verticalLayout_3)
         self.horizontalLayout.addWidget(self.frame_2)
@@ -761,7 +761,291 @@ class Ui_MainWindow(object):
     def btn_items_click(self):
         for i in reversed(range(self.verticalLayout_3.count())):
             self.verticalLayout_3.itemAt(i).widget().setParent(None)
-        self.verticalLayout_3.addWidget(self.items_table())
+        # self.verticalLayout_3.addWidget(self.items_table())
+        self.frame_6 = QtWidgets.QFrame(self.frame_2)
+        self.frame_6.setMaximumSize(QtCore.QSize(16777215, 50))
+        self.frame_6.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_6.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_6.setObjectName("frame_6")
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.frame_6)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.addItem = QtWidgets.QPushButton(self.frame_6)
+        self.addItem.setText("Add item")
+        self.addItem.setObjectName("addItem")
+        self.deleteItem = QtWidgets.QPushButton(self.frame_6)
+        self.deleteItem.setText("Delete item")
+        self.deleteItem.setObjectName("deleteItem")
+        self.editItem = QtWidgets.QPushButton(self.frame_6)
+        self.editItem.setText("Edit item")
+        self.editItem.setObjectName("editItem")
+        self.horizontalLayout_2.addWidget(self.addItem)
+        self.horizontalLayout_2.addWidget(self.deleteItem)
+        self.horizontalLayout_2.addWidget(self.editItem)
+        spacerItem = QtWidgets.QSpacerItem(652, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_2.addItem(spacerItem)
+        self.verticalLayout_3.addWidget(self.frame_6)
+
+        ## Lower frame
+        self.frame_7 = QtWidgets.QFrame(self.frame_2)
+        self.frame_7.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_7.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_7.setObjectName("frame_7")
+        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.frame_7)
+        self.verticalLayout_6.setObjectName("verticalLayout_6")
+        self.verticalLayout_5 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_5.setObjectName("verticalLayout_5")
+
+        # loads operators data within table
+        self.verticalLayout_5.addWidget(self.items_table())
+        self.verticalLayout_6.addLayout(self.verticalLayout_5)
+        self.verticalLayout_3.addWidget(self.frame_7)
+        self.addItem.clicked.connect(self.btn_open_add_item_dialog)
+        self.deleteItem.clicked.connect(self.btn_open_delete_item_dialog)
+        self.editItem.clicked.connect(self.btn_open_edit_item_dialog)
+
+    def btn_open_edit_item_dialog(self):
+        self.edit_dialog = QtWidgets.QDialog()
+        self.edit_dialog.setWindowModality(QtCore.Qt.ApplicationModal)
+        self.setupEditUi(self.edit_dialog)
+        self.edit_dialog.show()
+
+    def setupEditUi(self, Dialog):
+        Dialog.setObjectName("Dialog")
+        Dialog.resize(400, 300)
+        self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.frame = QtWidgets.QFrame(Dialog)
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.frame)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.listWidget = QtWidgets.QListWidget(self.frame)
+        self.listWidget.setObjectName("listWidget")
+        self.verticalLayout_2.addWidget(self.listWidget)
+        self.editItem = QtWidgets.QPushButton(self.frame)
+        self.editItem.setObjectName("editItem")
+        self.verticalLayout_2.addWidget(self.editItem)
+        self.verticalLayout.addWidget(self.frame)
+
+        self.load_items_list_dialog_data()
+
+        self.retranslateEditUi(Dialog)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
+        self.editItem.clicked.connect(self.edit_item)
+
+    def retranslateEditUi(self, Dialog):
+        _translate = QtCore.QCoreApplication.translate
+        Dialog.setWindowTitle(_translate("Dialog", "Select item to edit"))
+        self.editItem.setText(_translate("Dialog", "Edit Item"))
+
+    def edit_item(self):
+        self.item_name = self.listWidget.currentItem().text()
+        self.save_edit_dialog = QtWidgets.QDialog()
+        self.save_edit_dialog.setWindowModality(QtCore.Qt.ApplicationModal)
+        self.EditItemDetailsDialogUi(self.save_edit_dialog, self.item_name)
+        self.save_edit_dialog.show()
+
+    def EditItemDetailsDialogUi(self, Dialog, item_name):
+        Dialog.setObjectName("Dialog")
+        Dialog.resize(400, 300)
+        self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.frame = QtWidgets.QFrame(Dialog)
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.frame)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.label = QtWidgets.QLabel(self.frame)
+        self.label.setObjectName("label")
+        self.horizontalLayout.addWidget(self.label)
+        self.itemName = QtWidgets.QLineEdit(self.frame)
+        self.itemName.setObjectName("itemName")
+        self.horizontalLayout.addWidget(self.itemName)
+        self.verticalLayout_2.addLayout(self.horizontalLayout)
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.label_2 = QtWidgets.QLabel(self.frame)
+        self.label_2.setObjectName("label_2")
+        self.horizontalLayout_2.addWidget(self.label_2)
+        self.UnitOfMeasurement = QtWidgets.QLineEdit(self.frame)
+        self.UnitOfMeasurement.setObjectName("UnitOfMeasurement")
+        self.horizontalLayout_2.addWidget(self.UnitOfMeasurement)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_2)
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.label_3 = QtWidgets.QLabel(self.frame)
+        self.label_3.setObjectName("label_3")
+        self.horizontalLayout_3.addWidget(self.label_3)
+        self.unitPrice = QtWidgets.QLineEdit(self.frame)
+        self.unitPrice.setText("")
+        self.unitPrice.setObjectName("unitPrice")
+        self.horizontalLayout_3.addWidget(self.unitPrice)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_3)
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.label_4 = QtWidgets.QLabel(self.frame)
+        self.label_4.setObjectName("label_4")
+        self.horizontalLayout_4.addWidget(self.label_4)
+        self.codes = QtWidgets.QLineEdit(self.frame)
+        self.codes.setText("")
+        self.codes.setObjectName("codes")
+        self.horizontalLayout_4.addWidget(self.codes)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_4)
+        self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_5.setObjectName("horizontalLayout_5")
+        self.label_5 = QtWidgets.QLabel(self.frame)
+        self.label_5.setObjectName("label_5")
+        self.horizontalLayout_5.addWidget(self.label_5)
+        self.remarks = QtWidgets.QTextEdit(self.frame)
+        self.remarks.setObjectName("remarks")
+        self.horizontalLayout_5.addWidget(self.remarks)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_5)
+        self.verticalLayout.addWidget(self.frame)
+        self.buttonBox = QtWidgets.QDialogButtonBox(Dialog)
+        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName("buttonBox")
+        self.verticalLayout.addWidget(self.buttonBox)
+
+        self.retranslateEditItemDetailsUi(Dialog, item_name)
+        self.buttonBox.accepted.connect(self.dialog_accepted_save_edit)
+        self.buttonBox.rejected.connect(Dialog.reject)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
+
+    def retranslateEditItemDetailsUi(self, Dialog, item_name):
+        _translate = QtCore.QCoreApplication.translate
+        Dialog.setWindowTitle(_translate("Dialog", "Add Item"))
+        self.label.setText(_translate("Dialog", "Item name:"))
+        self.label_2.setText(_translate("Dialog", "Units of measurement:"))
+        self.label_3.setText(_translate("Dialog", "Unit price: "))
+        self.label_4.setText(_translate("Dialog", "Codes: "))
+        self.label_5.setText(_translate("Dialog", "Remarks: "))
+
+        self.item_edit_name = item_name
+
+        conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
+        cursor = conn.cursor()
+        query = 'select id, codes, product_name, units, unit_price, remarks, created_at, updated_at from items where ' \
+                'product_name = \'' + item_name + '\''
+        cursor.execute(query)
+        data_list = cursor.fetchall()
+        print(data_list)
+        for row_number, d in enumerate(data_list):
+            self.itemName.setText(_translate("Dialog", d[2]))
+            self.UnitOfMeasurement.setText(_translate("Dialog", d[3]))
+            self.unitPrice.setText(_translate("Dialog", str(d[4])))
+            self.codes.setText(_translate("Dialog", d[1]))
+            self.remarks.setText(_translate("Dialog", d[5]))
+        conn.close()
+
+    def dialog_accepted_save_edit(self):
+        self.item_name = str(self.itemName.text()).strip()
+        self.units_of_measurement = str(self.UnitOfMeasurement.text()).strip()
+        self.unit_price = str(self.unitPrice.text()).strip()
+        self.code = str(self.codes.text()).strip()
+        self.remark = str(self.remarks.toPlainText()).strip()
+
+        self.save_edit_details(self.item_name, self.units_of_measurement, self.unit_price, self.code, self.remark)
+        self.save_edit_dialog.close()
+        # Reloads the items table list
+        self.listWidget.clear()
+        self.load_items_list_dialog_data()
+        self.btn_items_click()
+
+    def save_edit_details(self, item_name, units_of_measurement, unit_price, code, remarks):
+        conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
+        cursor = conn.cursor()
+        query = 'update items set codes=\'' + code + '\',product_name=\'' + \
+                item_name + '\',units=\'' + units_of_measurement + '\',unit_price=\'' + unit_price + '\'' \
+                                                                                                     ',remarks=\'' + remarks + '\' where product_name=\'' + self.item_edit_name + '\''
+
+        print(query)
+        try:
+            cursor.execute(query)
+            conn.commit()
+        except mysql.connector.Error as err:
+            print("Something went wrong: {}".format(err))
+            conn.rollback()
+
+        conn.close()
+
+    def delete_item(self):
+        # print("Delete item", self.listWidget.currentItem().text())
+        # print("Delete item", self.listWidget.item(1).text())
+        self.del_item_name = self.listWidget.currentItem().text()
+        self.delete_from_db(self.del_item_name)
+
+    def btn_open_delete_item_dialog(self):
+        self.del_dialog = QtWidgets.QDialog()
+        self.del_dialog.setWindowModality(QtCore.Qt.ApplicationModal)
+        self.setupDeleteUi(self.del_dialog)
+        self.del_dialog.show()
+
+    def setupDeleteUi(self, Dialog):
+        Dialog.setObjectName("Dialog")
+        Dialog.resize(400, 300)
+        self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.frame = QtWidgets.QFrame(Dialog)
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.frame)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.listWidget = QtWidgets.QListWidget(self.frame)
+        self.listWidget.setObjectName("listWidget")
+        self.verticalLayout_2.addWidget(self.listWidget)
+        self.deleteItem = QtWidgets.QPushButton(self.frame)
+        self.deleteItem.setObjectName("deleteItem")
+        self.verticalLayout_2.addWidget(self.deleteItem)
+        self.verticalLayout.addWidget(self.frame)
+
+        self.load_items_list_dialog_data()
+
+        self.retranslateDeleteUi(Dialog)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
+        self.deleteItem.clicked.connect(self.delete_item)
+
+    def delete_item(self):
+        # print("Delete item", self.listWidget.currentItem().text())
+        # print("Delete item", self.listWidget.item(1).text())
+        self.del_item_name = self.listWidget.currentItem().text()
+        self.delete_from_db(self.del_item_name)
+
+    def delete_from_db(self, item_name):
+        conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
+        cursor = conn.cursor()
+        query = 'delete from items where product_name=\'' + item_name + '\''
+        print(query)
+        try:
+            cursor.execute(query)
+            conn.commit()
+            self.del_dialog.close()
+            self.btn_items_click()
+        except mysql.connector.Error as err:
+            print("Something went wrong: {}".format(err))
+            conn.rollback()
+
+        conn.close()
+
+    def retranslateDeleteUi(self, Dialog):
+        _translate = QtCore.QCoreApplication.translate
+        Dialog.setWindowTitle(_translate("Dialog", "Select item to delete"))
+        self.deleteItem.setText(_translate("Dialog", "Delete Item"))
+
+    def load_items_list_dialog_data(self):
+        conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
+        cursor = conn.cursor()
+        cursor.execute('select id, product_name from items')
+        data_list = cursor.fetchall()
+        # item = QtWidgets.QListWidgetItem()
+        for row_number, d in enumerate(data_list):
+            self.listWidget.addItem(QtWidgets.QListWidgetItem(d[1]))
+        conn.close()
 
     def btn_sales_click(self):
         for i in reversed(range(self.verticalLayout_3.count())):
@@ -826,6 +1110,15 @@ class Ui_MainWindow(object):
         # self.nd = Ui_Dialog()
         # self.nd.setupUi(self.dialog)
         self.setupDialogUi(self.dialog)
+        self.dialog.show()
+
+    def btn_open_add_item_dialog(self):
+        # Dialog of modal type, not dismissible by click to other windows
+        self.dialog = QtWidgets.QDialog()
+        self.dialog.setWindowModality(QtCore.Qt.ApplicationModal)
+        # self.nd = Ui_Dialog()
+        # self.nd.setupUi(self.dialog)
+        self.addItemDialogUi(self.dialog)
         self.dialog.show()
 
     def btn_operator_performance_click(self):
@@ -965,7 +1258,114 @@ class Ui_MainWindow(object):
                            'values(\'' + first_name + '\',\'' + last_name + '\',\'' + auth_id + '\',\'' + date_of_birth + '\''
                                                                                                                           ',\'' + password + '\')')
             conn.commit()
-        except:
+        except mysql.connector.Error as err:
+            print("Something went wrong: {}".format(err))
+            conn.rollback()
+
+        conn.close()
+
+    def addItemDialogUi(self, Dialog):
+        Dialog.setObjectName("Dialog")
+        Dialog.resize(400, 300)
+        self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.frame = QtWidgets.QFrame(Dialog)
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.frame)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.label = QtWidgets.QLabel(self.frame)
+        self.label.setObjectName("label")
+        self.horizontalLayout.addWidget(self.label)
+        self.itemName = QtWidgets.QLineEdit(self.frame)
+        self.itemName.setObjectName("itemName")
+        self.horizontalLayout.addWidget(self.itemName)
+        self.verticalLayout_2.addLayout(self.horizontalLayout)
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.label_2 = QtWidgets.QLabel(self.frame)
+        self.label_2.setObjectName("label_2")
+        self.horizontalLayout_2.addWidget(self.label_2)
+        self.UnitOfMeasurement = QtWidgets.QLineEdit(self.frame)
+        self.UnitOfMeasurement.setObjectName("UnitOfMeasurement")
+        self.horizontalLayout_2.addWidget(self.UnitOfMeasurement)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_2)
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.label_3 = QtWidgets.QLabel(self.frame)
+        self.label_3.setObjectName("label_3")
+        self.horizontalLayout_3.addWidget(self.label_3)
+        self.unitPrice = QtWidgets.QLineEdit(self.frame)
+        self.unitPrice.setText("")
+        self.unitPrice.setObjectName("unitPrice")
+        self.horizontalLayout_3.addWidget(self.unitPrice)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_3)
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.label_4 = QtWidgets.QLabel(self.frame)
+        self.label_4.setObjectName("label_4")
+        self.horizontalLayout_4.addWidget(self.label_4)
+        self.codes = QtWidgets.QLineEdit(self.frame)
+        self.codes.setText("")
+        self.codes.setObjectName("codes")
+        self.horizontalLayout_4.addWidget(self.codes)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_4)
+        self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_5.setObjectName("horizontalLayout_5")
+        self.label_5 = QtWidgets.QLabel(self.frame)
+        self.label_5.setObjectName("label_5")
+        self.horizontalLayout_5.addWidget(self.label_5)
+        self.remarks = QtWidgets.QTextEdit(self.frame)
+        self.remarks.setObjectName("remarks")
+        self.horizontalLayout_5.addWidget(self.remarks)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_5)
+        self.verticalLayout.addWidget(self.frame)
+        self.buttonBox = QtWidgets.QDialogButtonBox(Dialog)
+        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName("buttonBox")
+        self.verticalLayout.addWidget(self.buttonBox)
+
+        self.retranslateAddItemUi(Dialog)
+        self.buttonBox.accepted.connect(self.dialog_accepted_add_property)
+        self.buttonBox.rejected.connect(Dialog.reject)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
+
+    def retranslateAddItemUi(self, Dialog):
+        _translate = QtCore.QCoreApplication.translate
+        Dialog.setWindowTitle(_translate("Dialog", "Add Item"))
+        self.label.setText(_translate("Dialog", "Item name:"))
+        self.label_2.setText(_translate("Dialog", "Units of measurement:"))
+        self.label_3.setText(_translate("Dialog", "Unit price: "))
+        self.label_4.setText(_translate("Dialog", "Codes: "))
+        self.label_5.setText(_translate("Dialog", "Remarks: "))
+
+    def dialog_accepted_add_property(self):
+        self.item_name = str(self.itemName.text()).strip()
+        self.units_of_measurement = str(self.UnitOfMeasurement.text()).strip()
+        self.unit_price = str(self.unitPrice.text()).strip()
+        self.code = str(self.codes.text()).strip()
+        self.remark = str(self.remarks.toPlainText()).strip()
+
+        self.save_item_details(self.item_name, self.units_of_measurement, self.unit_price, self.code, self.remark)
+        self.dialog.hide()
+        # Reloads the items table list
+        self.btn_items_click()
+
+    def save_item_details(self, item_name, units_of_measurement, unit_price, code, remarks):
+        conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
+        cursor = conn.cursor()
+        query = 'insert into items(codes,product_name,units,unit_price,remarks) ' \
+                'values(\'' + code + '\',\'' + item_name + '\',\'' + units_of_measurement + '\',\'' + unit_price + '\'' \
+                                                                                                                   ',\'' + remarks + '\')'
+        try:
+            cursor.execute(query)
+            conn.commit()
+        except mysql.connector.Error as err:
+            print("Something went wrong: {}".format(err))
             conn.rollback()
 
         conn.close()
