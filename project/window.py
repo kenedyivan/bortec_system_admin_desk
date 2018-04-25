@@ -471,7 +471,7 @@ class Ui_MainWindow(object):
         explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
 
         self.fig1, ax1 = plt.subplots()
-        ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+        ax1.pie(sizes, labels=labels, autopct='%1.1f%%',
                 shadow=True, startangle=90)
         ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
         self.canvas_sales_pie = FigureCanvas(self.fig1)
@@ -504,7 +504,9 @@ class Ui_MainWindow(object):
         explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
 
         self.fig2, ax1 = plt.subplots()
-        ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+        # ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+        #         shadow=True, startangle=90)
+        ax1.pie(sizes, labels=labels, autopct='%1.1f%%',
                 shadow=True, startangle=90)
         ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
         self.canvas_exp_pie = FigureCanvas(self.fig2)
@@ -752,6 +754,7 @@ class Ui_MainWindow(object):
     '''
     Side menu button events handlers
     '''
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Bortec Inventory Analytics System"))
@@ -1303,11 +1306,11 @@ class Ui_MainWindow(object):
         query = ''
         if password != '':
             query = 'update operators set first_name=\'' + first_name + '\',last_name=\'' + last_name + '\',dob=\'' + date_of_birth + '\'' \
-                ',password=\'' + password + '\' where auth_id=\''+self.operator_edit_auth_id+'\''
+                                                                                                                                      ',password=\'' + password + '\' where auth_id=\'' + self.operator_edit_auth_id + '\''
 
         else:
             query = 'update operators set first_name=\'' + first_name + '\',last_name=\'' + last_name + '\',dob=\'' + date_of_birth + '\' ' \
-                'where auth_id=\''+self.operator_edit_auth_id+'\''
+                                                                                                                                      'where auth_id=\'' + self.operator_edit_auth_id + '\''
 
         print("Edit query: ", query)
         try:
@@ -1318,7 +1321,6 @@ class Ui_MainWindow(object):
             conn.rollback()
 
         conn.close()
-
 
     def setupDeleteOperatorUi(self, Dialog):
         Dialog.setObjectName("Dialog")
@@ -1641,6 +1643,15 @@ class Ui_MainWindow(object):
         try:
             cursor.execute(query)
             conn.commit()
+            item_id = cursor.lastrowid
+
+            # Inserts inventory data
+            query1 = 'insert into inventory_stocks(item_id,received,sales,stocks,total_expenditure_cost,total_sales_cost) ' \
+                    'values(\'' + str(item_id) + '\',\'0\',\'0\',\'0\',\'0\',\'0\')'
+            print(query1)
+            cursor.execute(query1)
+            conn.commit()
+
         except mysql.connector.Error as err:
             print("Something went wrong: {}".format(err))
             conn.rollback()
