@@ -743,10 +743,10 @@ class Ui_MainWindow(object):
         self.pushButton_4.clicked.connect(self.btn_inventory_click)
         self.pushButton_5.clicked.connect(self.btn_analytics_click)
         self.pushButton_6.clicked.connect(self.btn_static_analytics_click)
-        self.pushButton_8.clicked.connect(self.btn_operator_performance_click)
+        # self.pushButton_8.clicked.connect(self.btn_operator_performance_click)
         self.pushButton_operators.clicked.connect(self.btn_operators_click)
 
-        self.retranslateUi(MainWindow)
+        # self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     '''
@@ -973,11 +973,11 @@ class Ui_MainWindow(object):
 
         conn.close()
 
-    def delete_item(self):
-        # print("Delete item", self.listWidget.currentItem().text())
-        # print("Delete item", self.listWidget.item(1).text())
-        self.del_item_name = self.listWidget.currentItem().text()
-        self.delete_from_db(self.del_item_name)
+    # def delete_item(self):
+    #     # print("Delete item", self.listWidget.currentItem().text())
+    #     # print("Delete item", self.listWidget.item(1).text())
+    #     self.del_item_name = self.listWidget.currentItem().text()
+    #     self.delete_from_db(self.del_item_name)
 
     def btn_open_delete_item_dialog(self):
         self.del_dialog = QtWidgets.QDialog()
@@ -1082,7 +1082,15 @@ class Ui_MainWindow(object):
         self.addOperator = QtWidgets.QPushButton(self.frame_6)
         self.addOperator.setText("Add Operator")
         self.addOperator.setObjectName("addOperator")
+        self.deleteOperator = QtWidgets.QPushButton(self.frame_6)
+        self.deleteOperator.setText("Delete operator")
+        self.deleteOperator.setObjectName("deleteOperator")
+        self.editOperator = QtWidgets.QPushButton(self.frame_6)
+        self.editOperator.setText("Edit operator")
+        self.editOperator.setObjectName("editOperator")
         self.horizontalLayout_2.addWidget(self.addOperator)
+        self.horizontalLayout_2.addWidget(self.deleteOperator)
+        self.horizontalLayout_2.addWidget(self.editOperator)
         spacerItem = QtWidgets.QSpacerItem(652, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.verticalLayout_3.addWidget(self.frame_6)
@@ -1102,6 +1110,253 @@ class Ui_MainWindow(object):
         self.verticalLayout_6.addLayout(self.verticalLayout_5)
         self.verticalLayout_3.addWidget(self.frame_7)
         self.addOperator.clicked.connect(self.btn_open_add_operator_dialog)
+        self.deleteOperator.clicked.connect(self.btn_open_delete_operator_dialog)
+        self.editOperator.clicked.connect(self.btn_open_edit_operator_dialog)
+
+    def btn_open_edit_operator_dialog(self):
+        self.edit_operator_dialog = QtWidgets.QDialog()
+        self.edit_operator_dialog.setWindowModality(QtCore.Qt.ApplicationModal)
+        self.setupEditOperatorUi(self.edit_operator_dialog)
+        self.edit_operator_dialog.show()
+
+    def setupEditOperatorUi(self, Dialog):
+        Dialog.setObjectName("Dialog")
+        Dialog.resize(400, 300)
+        self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.frame = QtWidgets.QFrame(Dialog)
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.frame)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.listWidget = QtWidgets.QListWidget(self.frame)
+        self.listWidget.setObjectName("listWidget")
+        self.verticalLayout_2.addWidget(self.listWidget)
+        self.editItem = QtWidgets.QPushButton(self.frame)
+        self.editItem.setObjectName("editItem")
+        self.verticalLayout_2.addWidget(self.editItem)
+        self.verticalLayout.addWidget(self.frame)
+
+        self.load_operators_list_dialog_data()
+
+        self.retranslateEditOperatorUi(Dialog)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
+        self.editItem.clicked.connect(self.edit_operator)
+
+    def btn_open_delete_operator_dialog(self):
+        self.del_operator_dialog = QtWidgets.QDialog()
+        self.del_operator_dialog.setWindowModality(QtCore.Qt.ApplicationModal)
+        self.setupDeleteOperatorUi(self.del_operator_dialog)
+        self.del_operator_dialog.show()
+
+    def retranslateEditOperatorUi(self, Dialog):
+        _translate = QtCore.QCoreApplication.translate
+        Dialog.setWindowTitle(_translate("Dialog", "Select operator to edit"))
+        self.editItem.setText(_translate("Dialog", "Edit Operator"))
+
+    def edit_operator(self):
+        self.operator_auth_id = self.listWidget.currentItem().text()
+        self.save_operator_edit_dialog = QtWidgets.QDialog()
+        self.save_operator_edit_dialog.setWindowModality(QtCore.Qt.ApplicationModal)
+        self.EditOperatorDetailsDialogUi(self.save_operator_edit_dialog, self.operator_auth_id)
+        self.save_operator_edit_dialog.show()
+
+    def EditOperatorDetailsDialogUi(self, Dialog, operator_auth_id):
+        Dialog.setObjectName("Dialog")
+        Dialog.resize(400, 300)
+        self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.frame = QtWidgets.QFrame(Dialog)
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+        self.widget = QtWidgets.QWidget(self.frame)
+        self.widget.setGeometry(QtCore.QRect(53, 20, 301, 211))
+        self.widget.setObjectName("widget")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.widget)
+        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.label = QtWidgets.QLabel(self.widget)
+        self.label.setObjectName("label")
+        self.horizontalLayout.addWidget(self.label)
+        self.lineEdit = QtWidgets.QLineEdit(self.widget)
+        self.lineEdit.setObjectName("lineEdit")
+        self.horizontalLayout.addWidget(self.lineEdit)
+        self.verticalLayout_2.addLayout(self.horizontalLayout)
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.label_2 = QtWidgets.QLabel(self.widget)
+        self.label_2.setObjectName("label_2")
+        self.horizontalLayout_2.addWidget(self.label_2)
+        self.lineEdit_2 = QtWidgets.QLineEdit(self.widget)
+        self.lineEdit_2.setObjectName("lineEdit_2")
+        self.horizontalLayout_2.addWidget(self.lineEdit_2)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_2)
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.label_3 = QtWidgets.QLabel(self.widget)
+        self.label_3.setObjectName("label_3")
+        self.horizontalLayout_3.addWidget(self.label_3)
+        self.lineEdit_3 = QtWidgets.QLineEdit(self.widget)
+        self.lineEdit_3.setObjectName("lineEdit_3")
+        self.horizontalLayout_3.addWidget(self.lineEdit_3)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_3)
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.label_4 = QtWidgets.QLabel(self.widget)
+        self.label_4.setObjectName("label_4")
+        self.horizontalLayout_4.addWidget(self.label_4)
+        self.lineEdit_4 = QtWidgets.QLineEdit(self.widget)
+        self.lineEdit_4.setObjectName("lineEdit_4")
+        self.horizontalLayout_4.addWidget(self.lineEdit_4)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_4)
+        self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_5.setObjectName("horizontalLayout_5")
+        self.label_5 = QtWidgets.QLabel(self.widget)
+        self.label_5.setObjectName("label_5")
+        self.horizontalLayout_5.addWidget(self.label_5)
+        self.lineEdit_5 = QtWidgets.QLineEdit(self.widget)
+        self.lineEdit_5.setObjectName("lineEdit_5")
+        self.lineEdit_5.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.horizontalLayout_5.addWidget(self.lineEdit_5)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_5)
+        self.verticalLayout.addWidget(self.frame)
+        self.buttonBox = QtWidgets.QDialogButtonBox(Dialog)
+        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+        self.buttonBox.setObjectName("buttonBox")
+        self.verticalLayout.addWidget(self.buttonBox)
+
+        self.retranslateDialogEditOperatorUi(Dialog, operator_auth_id)
+        self.buttonBox.accepted.connect(self.dialog_accepted)
+        self.buttonBox.rejected.connect(Dialog.reject)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
+
+    def dialog_accepted(self):
+        self.first_name = str(self.lineEdit.text()).strip()
+        self.last_name = str(self.lineEdit_2.text()).strip()
+        self.auth_id = str(self.lineEdit_3.text()).strip()
+        self.date_of_birth = str(self.lineEdit_4.text()).strip()
+        self.password = str(self.lineEdit_5.text()).strip()
+
+        if self.password != "":
+            self.hashed_password = bcrypt.hashpw(self.password.encode('utf-8'), bcrypt.gensalt())
+            self.save_operator_edit_details(self.first_name, self.last_name,
+                                            self.auth_id, self.date_of_birth,
+                                            password=str(self.hashed_password, 'utf-8'))
+        else:
+            self.save_operator_edit_details(self.first_name, self.last_name,
+                                            self.auth_id, self.date_of_birth)
+
+        self.save_operator_edit_dialog.hide()
+        # Reloads the operators table list
+        self.btn_operators_click()
+
+    def retranslateDialogEditOperatorUi(self, Dialog, auth_id):
+        _translate = QtCore.QCoreApplication.translate
+        Dialog.setWindowTitle(_translate("Dialog", "Add Operator"))
+        self.label.setText(_translate("Dialog", "First name:"))
+        self.label_2.setText(_translate("Dialog", "Last name:"))
+        self.label_3.setText(_translate("Dialog", "Auth ID:"))
+        self.label_4.setText(_translate("Dialog", "Date of birth:"))
+        self.label_5.setText(_translate("Dialog", "New password:"))
+
+        self.operator_edit_auth_id = auth_id
+        conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
+        cursor = conn.cursor()
+        cursor.execute(
+            'select id, first_name, last_name, auth_id, dob, created_at, updated_at from operators where auth_id=\'' + self.operator_edit_auth_id + '\'')
+        data_list = cursor.fetchall()
+        for row_number, d in enumerate(data_list):
+            self.lineEdit.setText(_translate("Dialog", d[1]))
+            self.lineEdit_2.setText(_translate("Dialog", d[2]))
+            self.lineEdit_3.setText(_translate("Dialog", d[3]))
+            self.lineEdit_4.setText(_translate("Dialog", str(d[4])))
+        conn.close()
+
+    def save_operator_edit_details(self, first_name, last_name, auth_id, date_of_birth, password=''):
+        conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
+        cursor = conn.cursor()
+        query = ''
+        if password != '':
+            query = 'update operators set first_name=\'' + first_name + '\',last_name=\'' + last_name + '\',auth_id=\'' + auth_id + '\',dob=\'' + date_of_birth + '\'' \
+                                                                                                                                                                  ',password=\'' + password + '\''
+        else:
+            query = 'update operators set first_name=\'' + first_name + '\',last_name=\'' + last_name + '\',auth_id=\'' + auth_id + '\',dob=\'' + date_of_birth + '\''
+
+        print("Edit query: ", query)
+        try:
+            cursor.execute(query)
+            conn.commit()
+        except mysql.connector.Error as err:
+            print("Something went wrong: {}".format(err))
+            conn.rollback()
+
+        conn.close()
+
+
+def setupDeleteOperatorUi(self, Dialog):
+    Dialog.setObjectName("Dialog")
+    Dialog.resize(400, 300)
+    self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
+    self.verticalLayout.setObjectName("verticalLayout")
+    self.frame = QtWidgets.QFrame(Dialog)
+    self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+    self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+    self.frame.setObjectName("frame")
+    self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.frame)
+    self.verticalLayout_2.setObjectName("verticalLayout_2")
+    self.listWidget = QtWidgets.QListWidget(self.frame)
+    self.listWidget.setObjectName("listWidget")
+    self.verticalLayout_2.addWidget(self.listWidget)
+    self.deleteItem = QtWidgets.QPushButton(self.frame)
+    self.deleteItem.setObjectName("deleteItem")
+    self.verticalLayout_2.addWidget(self.deleteItem)
+    self.verticalLayout.addWidget(self.frame)
+
+    self.load_operators_list_dialog_data()
+
+    self.retranslateDeleteOperatorUi(Dialog)
+    QtCore.QMetaObject.connectSlotsByName(Dialog)
+    self.deleteItem.clicked.connect(self.delete_operator)
+
+    def retranslateDeleteOperatorUi(self, Dialog):
+        _translate = QtCore.QCoreApplication.translate
+        Dialog.setWindowTitle(_translate("Dialog", "Select item to delete"))
+        self.deleteItem.setText(_translate("Dialog", "Delete Item"))
+
+    def load_operators_list_dialog_data(self):
+        conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
+        cursor = conn.cursor()
+        cursor.execute('select id, auth_id from operators')
+        data_list = cursor.fetchall()
+        # item = QtWidgets.QListWidgetItem()
+        for row_number, d in enumerate(data_list):
+            self.listWidget.addItem(QtWidgets.QListWidgetItem(d[1]))
+        conn.close()
+
+    def delete_operator(self):
+        self.del_auth_id = self.listWidget.currentItem().text()
+        self.delete_operator_from_db(self.del_auth_id)
+
+    def delete_operator_from_db(self, auth_id):
+        conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
+        cursor = conn.cursor()
+        query = 'delete from operators where auth_id=\'' + auth_id + '\''
+        print(query)
+        try:
+            cursor.execute(query)
+            conn.commit()
+            self.del_operator_dialog.close()
+            self.btn_operators_click()
+        except mysql.connector.Error as err:
+            print("Something went wrong: {}".format(err))
+            conn.rollback()
+
+        conn.close()
 
     def btn_open_add_operator_dialog(self):
         # Dialog of modal type, not dismissible by click to other windows
