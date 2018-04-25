@@ -746,12 +746,33 @@ class Ui_MainWindow(object):
         # self.pushButton_8.clicked.connect(self.btn_operator_performance_click)
         self.pushButton_operators.clicked.connect(self.btn_operators_click)
 
-        # self.retranslateUi(MainWindow)
+        self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     '''
     Side menu button events handlers
     '''
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "Bortec Inventory Analytics System"))
+        self.label.setText(_translate("MainWindow", "<h2><i><b><font color=red>BORTEC</font></b></i></h2>"))
+        self.pushButton.setText(_translate("MainWindow", "Items"))
+        self.pushButton_2.setText(_translate("MainWindow", "Sales"))
+        self.pushButton_3.setText(_translate("MainWindow", "Received"))
+        self.pushButton_4.setText(_translate("MainWindow", "Inventory"))
+        self.pushButton_operators.setText(_translate("MainWindow", "Operators"))
+        self.pushButton_5.setText(_translate("MainWindow", "Real-time Analytics"))
+        self.pushButton_6.setText(_translate("MainWindow", "Static Analytics"))
+        self.pushButton_7.setText(_translate("MainWindow", "Predictive Analysis"))
+        self.pushButton_8.setText(_translate("MainWindow", "Operators Analytics"))
+        self.pushButton_9.setText(_translate("MainWindow", "Admins"))
+        self.pushButton_10.setText(_translate("MainWindow", "Logout"))
+        self.menuFile.setTitle(_translate("MainWindow", "File"))
+        self.menuEdit.setTitle(_translate("MainWindow", "Edit"))
+        self.menuView.setTitle(_translate("MainWindow", "View"))
+        self.menuSettings.setTitle(_translate("MainWindow", "Settings"))
+        self.menuWindow.setTitle(_translate("MainWindow", "Window"))
+        self.menuHelp.setTitle(_translate("MainWindow", "Help"))
 
     def btn_inventory_click(self):
         for i in reversed(range(self.verticalLayout_3.count())):
@@ -1202,6 +1223,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.addWidget(self.label_3)
         self.lineEdit_3 = QtWidgets.QLineEdit(self.widget)
         self.lineEdit_3.setObjectName("lineEdit_3")
+        self.lineEdit_3.setEnabled(False)
         self.horizontalLayout_3.addWidget(self.lineEdit_3)
         self.verticalLayout_2.addLayout(self.horizontalLayout_3)
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
@@ -1231,11 +1253,11 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.buttonBox)
 
         self.retranslateDialogEditOperatorUi(Dialog, operator_auth_id)
-        self.buttonBox.accepted.connect(self.dialog_accepted)
+        self.buttonBox.accepted.connect(self.dialog_operator_edit_accepted)
         self.buttonBox.rejected.connect(Dialog.reject)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
-    def dialog_accepted(self):
+    def dialog_operator_edit_accepted(self):
         self.first_name = str(self.lineEdit.text()).strip()
         self.last_name = str(self.lineEdit_2.text()).strip()
         self.auth_id = str(self.lineEdit_3.text()).strip()
@@ -1244,12 +1266,10 @@ class Ui_MainWindow(object):
 
         if self.password != "":
             self.hashed_password = bcrypt.hashpw(self.password.encode('utf-8'), bcrypt.gensalt())
-            self.save_operator_edit_details(self.first_name, self.last_name,
-                                            self.auth_id, self.date_of_birth,
+            self.save_operator_edit_details(self.first_name, self.last_name, self.date_of_birth,
                                             password=str(self.hashed_password, 'utf-8'))
         else:
-            self.save_operator_edit_details(self.first_name, self.last_name,
-                                            self.auth_id, self.date_of_birth)
+            self.save_operator_edit_details(self.first_name, self.last_name, self.date_of_birth)
 
         self.save_operator_edit_dialog.hide()
         # Reloads the operators table list
@@ -1277,15 +1297,17 @@ class Ui_MainWindow(object):
             self.lineEdit_4.setText(_translate("Dialog", str(d[4])))
         conn.close()
 
-    def save_operator_edit_details(self, first_name, last_name, auth_id, date_of_birth, password=''):
+    def save_operator_edit_details(self, first_name, last_name, date_of_birth, password=''):
         conn = mysql.connector.connect(user='root', password='root', host='localhost', database='bortec_inv_system_db')
         cursor = conn.cursor()
         query = ''
         if password != '':
-            query = 'update operators set first_name=\'' + first_name + '\',last_name=\'' + last_name + '\',auth_id=\'' + auth_id + '\',dob=\'' + date_of_birth + '\'' \
-                                                                                                                                                                  ',password=\'' + password + '\''
+            query = 'update operators set first_name=\'' + first_name + '\',last_name=\'' + last_name + '\',dob=\'' + date_of_birth + '\'' \
+                ',password=\'' + password + '\' where auth_id=\''+self.operator_edit_auth_id+'\''
+
         else:
-            query = 'update operators set first_name=\'' + first_name + '\',last_name=\'' + last_name + '\',auth_id=\'' + auth_id + '\',dob=\'' + date_of_birth + '\''
+            query = 'update operators set first_name=\'' + first_name + '\',last_name=\'' + last_name + '\',dob=\'' + date_of_birth + '\' ' \
+                'where auth_id=\''+self.operator_edit_auth_id+'\''
 
         print("Edit query: ", query)
         try:
@@ -1298,30 +1320,30 @@ class Ui_MainWindow(object):
         conn.close()
 
 
-def setupDeleteOperatorUi(self, Dialog):
-    Dialog.setObjectName("Dialog")
-    Dialog.resize(400, 300)
-    self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
-    self.verticalLayout.setObjectName("verticalLayout")
-    self.frame = QtWidgets.QFrame(Dialog)
-    self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-    self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
-    self.frame.setObjectName("frame")
-    self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.frame)
-    self.verticalLayout_2.setObjectName("verticalLayout_2")
-    self.listWidget = QtWidgets.QListWidget(self.frame)
-    self.listWidget.setObjectName("listWidget")
-    self.verticalLayout_2.addWidget(self.listWidget)
-    self.deleteItem = QtWidgets.QPushButton(self.frame)
-    self.deleteItem.setObjectName("deleteItem")
-    self.verticalLayout_2.addWidget(self.deleteItem)
-    self.verticalLayout.addWidget(self.frame)
+    def setupDeleteOperatorUi(self, Dialog):
+        Dialog.setObjectName("Dialog")
+        Dialog.resize(400, 300)
+        self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.frame = QtWidgets.QFrame(Dialog)
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.frame)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.listWidget = QtWidgets.QListWidget(self.frame)
+        self.listWidget.setObjectName("listWidget")
+        self.verticalLayout_2.addWidget(self.listWidget)
+        self.deleteItem = QtWidgets.QPushButton(self.frame)
+        self.deleteItem.setObjectName("deleteItem")
+        self.verticalLayout_2.addWidget(self.deleteItem)
+        self.verticalLayout.addWidget(self.frame)
 
-    self.load_operators_list_dialog_data()
+        self.load_operators_list_dialog_data()
 
-    self.retranslateDeleteOperatorUi(Dialog)
-    QtCore.QMetaObject.connectSlotsByName(Dialog)
-    self.deleteItem.clicked.connect(self.delete_operator)
+        self.retranslateDeleteOperatorUi(Dialog)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
+        self.deleteItem.clicked.connect(self.delete_operator)
 
     def retranslateDeleteOperatorUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
