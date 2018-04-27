@@ -611,7 +611,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.frame = QtWidgets.QFrame(self.centralwidget)
         self.frame.setMaximumSize(QtCore.QSize(200, 16777215))
-        self.frame.setStyleSheet("background:rgb(178, 208, 255)")
+        # self.frame.setStyleSheet("background:rgb(178, 208, 255)")
+        self.frame.setStyleSheet("background:rgb(85, 113, 156)")
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame.setObjectName("frame")
@@ -637,8 +638,8 @@ class Ui_MainWindow(object):
         self.verticalLayout = QtWidgets.QVBoxLayout(self.frame_4)
         self.verticalLayout.setObjectName("verticalLayout")
         self.pushButton = QtWidgets.QPushButton(self.frame_4)
-        self.pushButton.setStyleSheet("color:red;\n"
-                                      "background-color:blue;")
+        # self.pushButton.setStyleSheet("color:red;\n"
+        #                               "background-color:blue;")
         self.pushButton.setObjectName("pushButton")
         self.verticalLayout.addWidget(self.pushButton)
         self.pushButton_2 = QtWidgets.QPushButton(self.frame_4)
@@ -671,9 +672,9 @@ class Ui_MainWindow(object):
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.frame_6)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.pushButton_6 = QtWidgets.QPushButton(self.frame_6)
-        self.pushButton_6.setStyleSheet("color:red;\n"
-                                        "background-color:blue;")
-        self.pushButton_6.setObjectName("pushButton_6")
+        # self.pushButton_6.setStyleSheet("color:red;\n"
+        #                                 "background-color:blue;")
+        # self.pushButton_6.setObjectName("pushButton_6")
         self.verticalLayout_5.addWidget(self.pushButton_6)
         self.pushButton_5 = QtWidgets.QPushButton(self.frame_6)
         self.pushButton_5.setObjectName("pushButton_5")
@@ -1412,7 +1413,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Bortec Inventory Analytics System"))
-        self.label.setText(_translate("MainWindow", "<h2><i><b><font color=red>BORTEC</font></b></i></h2>"))
+        self.label.setText(_translate("MainWindow", "<h2><i><b>BORTEC</b></i></h2>"))
         self.pushButton.setText(_translate("MainWindow", "Items"))
         self.pushButton_2.setText(_translate("MainWindow", "Sales"))
         self.pushButton_3.setText(_translate("MainWindow", "Received"))
